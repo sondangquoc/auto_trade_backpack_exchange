@@ -3,8 +3,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const backpack_client_1 = require("./backpack_client");
 
 /// EDIT HERE ///
-const API_KEY = "VC2jGOXfxxxxxxxxxxxxxxxxxxxx=";
-const API_SECRET = "EaIvdhigkxxxxxxxxxxxxxxxx=";
+// const API_KEY = "VC2jGOXfxxxxxxxxxxxxxxxxxxxx=";
+// const API_SECRET = "EaIvdhigkxxxxxxxxxxxxxxxx=";
+
+var API_KEY = process.env.API_KEY;
+var API_SECRET = process.env.API_SECRET;
 /////////////
 
 function delay(ms) {
@@ -52,7 +55,7 @@ const init = async (client) => {
         console.log("\n============================")
         console.log(`Total Buy: ${successbuy} | Total Sell: ${sellbuy}`);
         console.log("============================\n")
-        
+
         console.log(getNowFormatDate(), "Waiting 10 seconds...");
         await delay(10000);
 
@@ -83,8 +86,8 @@ const sellfun = async (client) => {
     }
 
     let userbalance2 = await client.Balance();
-    console.log(getNowFormatDate(), `My Account Infos: ${userbalance2.SOL.available} $SOL | ${userbalance2.USDC.available} $USDC`, );
-    
+    console.log(getNowFormatDate(), `My Account Infos: ${userbalance2.SOL.available} $SOL | ${userbalance2.USDC.available} $USDC`,);
+
     let { lastPrice: lastPriceask } = await client.Ticker({ symbol: "SOL_USDC" });
     console.log(getNowFormatDate(), "Price sol_usdc:", lastPriceask);
     let quantitys = ((userbalance2.SOL.available / 2) - 0.02).toFixed(2).toString();
@@ -102,9 +105,9 @@ const sellfun = async (client) => {
         console.log(getNowFormatDate(), "Sold successfully:", `Order number:${orderResultAsk.id}`);
         init(client);
     } else {
-        if (orderResultAsk?.status == 'Expired'){
+        if (orderResultAsk?.status == 'Expired') {
             throw new Error("Sell Order Expired");
-        } else{
+        } else {
             throw new Error(orderResultAsk?.status);
         }
     }
@@ -117,7 +120,7 @@ const buyfun = async (client) => {
         console.log(getNowFormatDate(), "All pending orders canceled");
     }
     let userbalance = await client.Balance();
-    console.log(getNowFormatDate(), `My Account Infos: ${userbalance.SOL.available} $SOL | ${userbalance.USDC.available} $USDC`, );
+    console.log(getNowFormatDate(), `My Account Infos: ${userbalance.SOL.available} $SOL | ${userbalance.USDC.available} $USDC`,);
     let { lastPrice } = await client.Ticker({ symbol: "SOL_USDC" });
     console.log(getNowFormatDate(), "Price of sol_usdc:", lastPrice);
     let quantitys = ((userbalance.USDC.available - 2) / lastPrice).toFixed(2).toString();
@@ -135,9 +138,9 @@ const buyfun = async (client) => {
         console.log(getNowFormatDate(), "Bought successfully:", `Order number: ${orderResultBid.id}`);
         init(client);
     } else {
-        if (orderResultAsk?.status == 'Expired'){
+        if (orderResultAsk?.status == 'Expired') {
             throw new Error("Buy Order Expired");
-        } else{
+        } else {
             throw new Error(orderResultAsk?.status);
         }
     }
@@ -146,6 +149,7 @@ const buyfun = async (client) => {
 (async () => {
     const apisecret = API_SECRET;
     const apikey = API_KEY;
+    console.log("\nAPI_KEY", apikey)
     const client = new backpack_client_1.BackpackClient(apisecret, apikey);
     init(client);
 })()
